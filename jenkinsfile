@@ -23,6 +23,17 @@ pipeline {
         */
 
         /* ----------------- E2E TEST STAGE ----------------- */
+        stage('test'){
+            agent{
+                docker{
+                    image 'node:latest'
+                }
+                steps{
+                    echo 'running unit tests'
+                    sh 'npm test'
+                }
+            }
+        }
         stage('E2E') {
             agent {
                 docker {
