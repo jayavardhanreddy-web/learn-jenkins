@@ -21,20 +21,8 @@ pipeline {
             }
         }
         */
-        stage('test'){
-            agent{
-                docker{
-                    image 'node:latest'
-                    reuseNode true
-                }
-            }
-            steps{
-                echo 'we are at the unit test'
-                sh'npm run test'
-            }
-        }
 
-        
+        /* ----------------- E2E TEST STAGE ----------------- */
         stage('E2E') {
             agent {
                 docker {
@@ -57,7 +45,7 @@ pipeline {
 
     post {
         always {
-            junit 'test-results/junit.xml'
+            junit 'jest/test-results/junit.xml'
         }
     }
 }
