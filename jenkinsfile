@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        /* ----------------- SKIPPED BUILD STAGE -----------------
+        /*
         stage('Build') {
             agent {
                 docker {
@@ -19,10 +19,10 @@ pipeline {
                     ls -a
                 '''
             }
-        }
-        */
+        }*/
+        
 
-        /* ----------------- UNIT TEST STAGE ----------------- */
+        
         stage('test') {
             agent {
                 docker {
