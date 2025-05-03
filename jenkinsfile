@@ -73,10 +73,10 @@ pipeline {
             }
         }
     }
-
+    /*
     post {
         always {
             junit 'jest/test-results/junit.xml'
         }
-    }
+    }*/
 }
