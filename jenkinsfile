@@ -75,16 +75,17 @@ pipeline {
                 node_modules/.bin/netlify --version
                 echo 'deployment production site id : NETLIFY_SITE-ID'
                 node_modules/.bin/netlify status
-                node_modules/.bin/netlify deploy --dir = build --prod
+                node_modules/.bin/netlify deploy --dir=build --prod
 
                 '''
             }
         }
     }
-    /*
     post {
-        always {
-            junit 'jest/test-results/junit.xml'
-        }
-    }*/
+    always {
+        junit 'jest-results/junit.xml'
+    }
+}
+
+    
 }
