@@ -7,6 +7,7 @@ pipeline {
             agent {
                 docker {
                     image 'node:latest'
+                    reuseNode true
                 }
             }
             steps {
@@ -27,6 +28,7 @@ pipeline {
             agent {
                 docker {
                     image 'node:latest'
+                    reuseNode true
                 }
             }
             steps {
@@ -35,11 +37,12 @@ pipeline {
             }
         }
 
-        /* ----------------- E2E TEST STAGE ----------------- */
+        
         stage('E2E') {
             agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.39.0'
+                    reuseNode true
 
                 }
             }
@@ -50,6 +53,22 @@ pipeline {
                     node_modules/.bin/serve -s build &
                     sleep 30
                     npx playwright test
+                '''
+            }
+        }
+        stage('deploy'){
+            agent{
+                docker{
+                    image 'node:latest'
+                    reuseNode true
+                }
+            }
+            steps{
+                echo 'we are at deployment stage'
+                sh '''
+                npm install -g netlify-cli
+                node_modules/.bin/netlify --version
+
                 '''
             }
         }
