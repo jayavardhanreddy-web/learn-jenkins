@@ -71,6 +71,7 @@ pipeline {
             steps{
                 echo 'we are at deployment stage'
                 sh '''
+                echo 'final stage'
                 npm install  netlify-cli
                 node_modules/.bin/netlify --version
                 echo 'deployment production site id : NETLIFY_SITE-ID'
