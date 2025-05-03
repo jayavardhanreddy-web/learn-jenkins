@@ -39,7 +39,7 @@ pipeline {
         stage('E2E') {
             agent {
                 docker {
-                    docker pull mcr.microsoft.com/playwright:v1.39.0
+                    image 'mcr.microsoft.com/playwright:v1.39.0'
 
                 }
             }
