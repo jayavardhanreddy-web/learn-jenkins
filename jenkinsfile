@@ -72,7 +72,8 @@ pipeline {
                 echo 'we are at deployment staging'
                 sh '''
                 
-                npm install  netlify-cli node-jq
+                npm install  netlify-cli
+                apt-get update && apt-get install -y jq
                 node_modules/.bin/netlify --version
                 echo "deployment production site id : $NETLIFY_SITE_ID"
 
