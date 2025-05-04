@@ -128,6 +128,7 @@ pipeline {
             steps{
                 echo 'at production testing stage'
                 sh'''
+                npm ci
                 npx playwright test
                 '''
             }
