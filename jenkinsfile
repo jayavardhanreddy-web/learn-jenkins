@@ -71,13 +71,30 @@ pipeline {
             steps{
                 echo 'we are at deployment stage'
                 sh '''
-                echo 'final stage'
+                
                 npm install  netlify-cli
                 node_modules/.bin/netlify --version
-                echo 'deployment production site id : NETLIFY_SITE-ID'
+                echo "deployment production site id : $NETLIFY_SITE_ID"
+
                 node_modules/.bin/netlify status
                 node_modules/.bin/netlify deploy --dir=build --prod
 
+                '''
+            }
+        }
+        stage('prod e2e'){
+            agent{
+                docker{
+                    image 'mcr.microsoft.com/playwright:v1.39.0'
+                }
+            }
+            environment{
+                CI_ENVIRONMENT_URL=' https://startling-unicorn-f2cbbb.netlify.app'
+            }
+            steps{
+                echo 'at production testing stage'
+                sh'''
+                npx playwright test
                 '''
             }
         }
