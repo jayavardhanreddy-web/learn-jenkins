@@ -83,8 +83,12 @@ pipeline {
             }
         }
         stage('Approval'){
-            timeout(time: 15, unit: 'SECONDS'){
-                input message: 'are you ready for deployment', ok: 'yes i am sure!'
+            steps{
+                timeout(time: 15, unit: 'SECONDS'){
+                    input message: 'are you ready for deployment', ok: 'yes i am sure!'
+               
+                }
+            
                
             }
             
