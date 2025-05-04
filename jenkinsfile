@@ -82,7 +82,14 @@ pipeline {
                 '''
             }
         }
-        stage('deploy'){
+        stage('Approval'){
+            timeout(time: 15, unit: 'SECONDS'){
+                input message: 'are you ready for deployment', ok: 'yes i am sure!'
+               
+            }
+            
+        }
+        stage('deploy to production'){
             agent{
                 docker{
                     image 'node:latest'
