@@ -61,6 +61,27 @@ pipeline {
                 '''
             }
         }
+        stage('deploy staging'){
+            agent{
+                docker{
+                    image 'node:latest'
+                    reuseNode true
+                }
+            }
+            steps{
+                echo 'we are at deployment staging'
+                sh '''
+                
+                npm install  netlify-cli
+                node_modules/.bin/netlify --version
+                echo "deployment production site id : $NETLIFY_SITE_ID"
+
+                node_modules/.bin/netlify status
+                node_modules/.bin/netlify deploy --dir=build 
+
+                '''
+            }
+        }
         stage('deploy'){
             agent{
                 docker{
@@ -69,7 +90,7 @@ pipeline {
                 }
             }
             steps{
-                echo 'we are at deployment stage'
+                echo 'we are at deployment to production'
                 sh '''
                 
                 npm install  netlify-cli
