@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage(docker){
             steps{
-                sh'docker build my playwright .'
+                sh'docker buildx build my playwright .'
             }
         }
         
