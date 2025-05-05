@@ -54,7 +54,8 @@ pipeline {
             steps {
                 echo 'We are on the E2E test stage'
                 sh '''
-                    serve -s build &
+                    npm install serve
+                    ./node_modules/.bin/serve -s build &
                     sleep 10
                     npx playwright test
                 '''
@@ -71,7 +72,7 @@ pipeline {
             steps {
                 echo 'We are at deployment staging'
                 sh '''
-                    export PATH=$PATH:$(npm bin -g)
+                    
                     netlify --version
                     echo "deployment production site id : $NETLIFY_SITE_ID"
                     netlify status
