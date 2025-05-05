@@ -71,7 +71,7 @@ pipeline {
             steps {
                 echo 'We are at deployment staging'
                 sh '''
-                   
+                    export PATH=$PATH:$(npm bin -g)
                     netlify --version
                     echo "deployment production site id : $NETLIFY_SITE_ID"
                     netlify status
