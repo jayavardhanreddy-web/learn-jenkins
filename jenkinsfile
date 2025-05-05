@@ -1,18 +1,17 @@
 pipeline {
     agent any
-    environment{
+    environment {
         NETLIFY_SITE_ID = '7f9dc758-a649-4aa5-9910-21620314c4de'
         NETLIFY_AUTH_TOKEN = credentials('netlify-dash-token')
-
     }
 
     stages {
-        stage(docker){
-            steps{
-                sh'docker buildx build my playwright .'
+        stage('docker') {
+            steps {
+                sh 'docker buildx build -t my-playwright .'
             }
         }
-        
+
         stage('Build') {
             agent {
                 docker {
@@ -31,9 +30,7 @@ pipeline {
                 '''
             }
         }
-        
 
-        
         stage('test') {
             agent {
                 docker {
@@ -47,13 +44,11 @@ pipeline {
             }
         }
 
-        
         stage('E2E') {
             agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.39.0'
                     reuseNode true
-
                 }
             }
             steps {
@@ -66,84 +61,77 @@ pipeline {
                 '''
             }
         }
-        stage('deploy staging'){
-            agent{
-                docker{
+
+        stage('deploy staging') {
+            agent {
+                docker {
                     image 'node:latest'
                     reuseNode true
                 }
             }
-            steps{
-                echo 'we are at deployment staging'
+            steps {
+                echo 'We are at deployment staging'
                 sh '''
-                
-                npm install  netlify-cli
-                npm install node-jq
-                node_modules/.bin/netlify --version
-                echo "deployment production site id : $NETLIFY_SITE_ID"
-
-                node_modules/.bin/netlify status
-                node_modules/.bin/netlify deploy --dir=build --json>deploy-output.json
-                node_modules/.bin/node-jq '.deploy_url' deploy-output.json
-
+                    npm install netlify-cli
+                    npm install node-jq
+                    node_modules/.bin/netlify --version
+                    echo "deployment production site id : $NETLIFY_SITE_ID"
+                    node_modules/.bin/netlify status
+                    node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json
+                    node_modules/.bin/node-jq '.deploy_url' deploy-output.json
                 '''
             }
         }
-        stage('Approval'){
-            steps{
-                timeout(time: 15, unit: 'MINUTES'){
-                    input message: 'are you ready for deployment', ok: 'yes i am sure!'
-               
+
+        stage('Approval') {
+            steps {
+                timeout(time: 15, unit: 'MINUTES') {
+                    input message: 'Are you ready for deployment?', ok: 'Yes, I am sure!'
                 }
-            
-               
             }
-            
         }
-        stage('deploy to production'){
-            agent{
-                docker{
+
+        stage('deploy to production') {
+            agent {
+                docker {
                     image 'node:latest'
                     reuseNode true
                 }
             }
-            steps{
-                echo 'we are at deployment to production'
+            steps {
+                echo 'We are at deployment to production'
                 sh '''
-                
-                npm install  netlify-cli
-                node_modules/.bin/netlify --version
-                echo "deployment production site id : $NETLIFY_SITE_ID"
-
-                node_modules/.bin/netlify status
-                node_modules/.bin/netlify deploy --dir=build --prod
-
+                    npm install netlify-cli
+                    node_modules/.bin/netlify --version
+                    echo "deployment production site id : $NETLIFY_SITE_ID"
+                    node_modules/.bin/netlify status
+                    node_modules/.bin/netlify deploy --dir=build --prod
                 '''
             }
         }
-        stage('prod e2e'){
-            agent{
-                docker{
+
+        stage('prod e2e') {
+            agent {
+                docker {
                     image 'mcr.microsoft.com/playwright:v1.39.0'
                 }
             }
-            environment{
-                CI_ENVIRONMENT_URL=' https://startling-unicorn-f2cbbb.netlify.app'
+            environment {
+                CI_ENVIRONMENT_URL = 'https://startling-unicorn-f2cbbb.netlify.app'
             }
-            steps{
-                echo 'at production testing stage'
-                sh'''
-                npm ci
-                npx playwright test
+            steps {
+                echo 'At production testing stage'
+                sh '''
+                    npm ci
+                    npx playwright test
                 '''
             }
         }
     }
-    post {
-    always {
-        junit 'jest-results/junit.xml'
-    }
-}
 
-    
+    post {
+        always {
+            junit 'jest-results/junit.xml'
+        }
+    }
 }
