@@ -6,19 +6,23 @@ pipeline {
     }
 
     stages {
-        stage('aws'){
-            agent{
-                docker{
+        stage('aws') {
+            agent {
+                docker {
                     image 'amazon/aws-cli'
                     args "--entrypoint=''"
                 }
             }
-            steps{
-                sh '''
-                aws --version
-                '''
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'aws-token', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: '')]) {
+                    sh '''
+                    aws --version
+                    aws s3 list
+                    '''
+                }
             }
         }
+
         stage('docker') {
             steps {
                 sh 'docker buildx build -t my-playwright .'
@@ -84,7 +88,6 @@ pipeline {
             steps {
                 echo 'We are at deployment staging'
                 sh '''
-                    
                     netlify --version
                     echo "deployment production site id : $NETLIFY_SITE_ID"
                     netlify status
@@ -112,7 +115,6 @@ pipeline {
             steps {
                 echo 'We are at deployment to production'
                 sh '''
-                    
                     netlify --version
                     echo "deployment production site id : $NETLIFY_SITE_ID"
                     netlify status
