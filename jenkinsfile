@@ -9,7 +9,7 @@ pipeline {
         stage('aws'){
             agent{
                 docker{
-                    image 'amazon/aws-cli:latest'
+                    image 'amazon/aws-cli:2.27.8'
                 }
             }
             steps{
